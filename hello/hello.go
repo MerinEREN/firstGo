@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"github.com/MerinEREN/firstGo/stringutil"
+	"github.com/MerinEREN/firstGo/stringutil"
 	"io/ioutil"
 	"log"
 	"math"
@@ -84,11 +84,11 @@ func main() {
 	fmt.Println(getPerimeter(rect1))
 	fmt.Println(getPerimeter(circle1))
 
-	//fmt.Printf(stringutil.Reverse("!oG ,olleH"))
+	fmt.Printf(stringutil.Reverse("!oG ,olleH"))
 
 	//GuessingGame()
 
-	file, err := os.Create("sample.go")
+	/*file, err := os.Create("sample.go")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -103,7 +103,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(string(stream))
+	fmt.Println(string(stream))*/
 
 	/*http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/England", englandHandler)
