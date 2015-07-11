@@ -5,6 +5,8 @@ import (
 	"github.com/MerinEREN/firstGo/stringutil"
 	//"io/ioutil"
 	//"log"
+	"github.com/zenazn/goji"
+	"github.com/zenazn/goji/web"
 	"math"
 	"net/http"
 	//"os"
@@ -108,6 +110,8 @@ func main() {
 	/*http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/England", englandHandler)
 	http.ListenAndServe(":8080", nil)*/
+	goji.Get("/hello/:name", hello)
+	goji.Serve()
 
 	stringChan := make(chan string)
 	for i := 0; i < 5; i++ {
@@ -215,12 +219,16 @@ func GuessingGame() {
 	fmt.Printf("Your number is %d.\n", answer)
 }
 
-func rootHandler(w http.ResponseWriter, r *http.Request) {
+/*func rootHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Hello, Earth !!!!!!!\n")
 }
 
 func englandHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, England !!!!!!!\n")
+}*/
+
+func hello(c web.C, w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "Hello, %s!", c.URLParams["name"])
 }
 
 func makeDough(c chan string) {
