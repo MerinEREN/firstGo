@@ -21,7 +21,13 @@ var dummyArray = [5]float64{1.1, 2.2, 3.3, 4, 5}
 var pizzaNumber = 0
 var pizzaName = ""
 
+/*var pizzaNumber int = 0
+var pizzaName string = ""*/
+
 func main() {
+	sOne, iOne := "merin", 5
+	fmt.Println(sOne, iOne)
+
 	dummySlice2 := make([]int, 6)
 	copy(dummySlice2, dummySlice)
 	dummySlice2 = append(dummySlice2, -9, 13, 8, 9, 10)
@@ -119,13 +125,20 @@ func main() {
 		go addSouce(stringChan)
 		go addToppings(stringChan)
 
-		time.Sleep(time.Millisecond * 5000)
+		time.Sleep(time.Millisecond * 1000)
 	}
 }
 
 func addThemUp(val int) (int, int) {
 	return val + 1, val + 2
 }
+
+/*func addThemUp(val int) (x int, y int) {
+	x = val + 1
+	y = val + 2
+
+	return
+}*/
 
 func substractAndAddThem(array []int) (int, int) {
 	sub := 0
@@ -236,18 +249,18 @@ func makeDough(c chan string) {
 	pizzaName = "This is Pizza #" + strconv.Itoa(pizzaNumber)
 	fmt.Println(pizzaName + " send to souce adding\n")
 	c <- pizzaName
-	time.Sleep(time.Millisecond * 10)
+	//time.Sleep(time.Millisecond * 10)
 }
 
 func addSouce(c chan string) {
 	pizza := <-c
 	fmt.Println(pizza + " send to topping adding\n")
 	c <- pizzaName
-	time.Sleep(time.Millisecond * 10)
+	//time.Sleep(time.Millisecond * 10)
 }
 
 func addToppings(c chan string) {
 	pizza := <-c
 	fmt.Println(pizza + " send to the customer\n")
-	time.Sleep(time.Millisecond * 10)
+	//time.Sleep(time.Millisecond * 10)
 }
