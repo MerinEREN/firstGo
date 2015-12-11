@@ -7,6 +7,6 @@ import (
 func main() {
 	ffdf := 21312323
 	dsssds := 34354545
-	ffdf += ds
+	ffdf += dsssds
 	fmt.Println("out yet !!!!!!!!!!!!!!!!\n")
 }
