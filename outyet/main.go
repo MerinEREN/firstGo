@@ -7,6 +7,7 @@ import (
 var ffdf = 2134
 
 func main() {
+	// master branch comment to rebase
 	// feature branch comment for commit
 	ffdf = 21312323
 	dsssds := 34354545
