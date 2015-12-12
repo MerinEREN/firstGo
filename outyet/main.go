@@ -15,4 +15,5 @@ func main() {
 	// 2 bug fix lines below
 	wrerr := 32433434
 	erwrerrewrwr := 32424343434
+	wrerr -= erwrerrewrwr
 }
