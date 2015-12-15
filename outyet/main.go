@@ -7,7 +7,6 @@ import (
 var ffdf = 2134
 
 func main() {
-	// feature branch two comment
 	ffdf = 21312323
 	dsssds := 34354545
 	ffdf += dsssds
@@ -16,4 +15,5 @@ func main() {
 	erwrerrewrwr := 32424343434
 	wrerr -= erwrerrewrwr
 	// master branch chages from fugitive conf.
+	// fature branch fugitive comment
 }
