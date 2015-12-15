@@ -15,5 +15,5 @@ func main() {
 	erwrerrewrwr := 32424343434
 	wrerr -= erwrerrewrwr
 	// master branch chages from fugitive conf.
-	// fature branch fugitive comment
+	// master branch chages from fugitive conf. 2
 }
