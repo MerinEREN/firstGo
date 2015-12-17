@@ -4,16 +4,16 @@ import (
 	"fmt"
 )
 
-var ffdf = 2134
+var intVarOne = 2134
 
 func main() {
-	ffdf = 21312323
-	dsssds := 34354545
-	ffdf += dsssds
+	intVarOne = 21312323
+	intVarTwo := 34354545
+	intVarOne += intVarTwo
 	fmt.Println("out yet !!!!!!!!!!!!!!!!\n")
-	wrerr := 32433434
-	erwrerrewrwr := 32424343434
-	wrerr -= erwrerrewrwr
+	intVarThree := 32433434
+	intVarFour := 32424343434
+	intVarThree -= intVarFour
 	// master branch chages from fugitive conf.
 	// master branch chages from fugitive conf. 2
 	// fature branch fugitive comment
