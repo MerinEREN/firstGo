@@ -72,7 +72,7 @@ func main() {
 	fmt.Println(closureResultString)
 
 	facValue := 5
-	fmt.Println(factorial(facValue))
+	fmt.Println(Factorial(facValue))
 
 	fmt.Println(safeDiv(3, 0))
 
@@ -150,11 +150,11 @@ func substractAndAddThem(array []int) (int, int) {
 	return sub, add
 }
 
-func factorial(v int) int {
+func Factorial(v int) int {
 	if v == 0 {
 		return 1
 	}
-	return v * factorial(v-1)
+	return v * Factorial(v-1)
 }
 
 func safeDiv(v1, v2 int) int {
