@@ -5,10 +5,10 @@ import (
 	"github.com/MerinEREN/firstGo/stringutil"
 	//"io/ioutil"
 	//"log"
-	"github.com/zenazn/goji"
-	"github.com/zenazn/goji/web"
+	//"github.com/zenazn/goji"
+	//"github.com/zenazn/goji/web"
 	"math"
-	"net/http"
+	//"net/http"
 	//"os"
 	"sort"
 	"strconv"
@@ -116,8 +116,8 @@ func main() {
 	/*http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/England", englandHandler)
 	http.ListenAndServe(":8080", nil)*/
-	goji.Get("/hello/:name", hello)
-	goji.Serve()
+	//goji.Get("/hello/:name", hello)
+	//goji.Serve()
 
 	stringChan := make(chan string)
 	for i := 0; i < 5; i++ {
@@ -126,6 +126,31 @@ func main() {
 		go addToppings(stringChan)
 
 		time.Sleep(time.Millisecond * 1000)
+	}
+
+	//FUNCTIONS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	// FUNCTIONS ARE VALUES TOO. THEY CAN BE PASSED AROUND JUST LIKE OTHER
+	// VALUES.
+	// FUNCTION VALUES MAY BE USED AS FUNCTION ARGUMANTS AND RETURN VALUES.
+
+	hypot := func(x, y float64) float64 {
+		return math.Sqrt(x*x + y*y)
+	}
+
+	fmt.Println(hypot(5, 12))
+	fmt.Println(compute(hypot))
+	fmt.Println(compute(math.Pow))
+	// FONCTION CLOSURES
+	// Go functions may be closures. A closure is a function value that
+	// references variables from outside its body. The function may access
+	// and assign to the referenced variables; in this sense the function
+	// is "bound" to the variables.
+	// For example, the adder function returns a closure. Each closure is
+	// bound to its own sum variable.
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(pos(i))
+		fmt.Println(neg(-2 * i))
 	}
 }
 
@@ -240,9 +265,9 @@ func englandHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, England !!!!!!!\n")
 }*/
 
-func hello(c web.C, w http.ResponseWriter, r *http.Request) {
+/*func hello(c web.C, w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello, %s!", c.URLParams["name"])
-}
+}*/
 
 func makeDough(c chan string) {
 	pizzaNumber++
@@ -263,4 +288,16 @@ func addToppings(c chan string) {
 	pizza := <-c
 	fmt.Println(pizza + " send to the customer\n")
 	//time.Sleep(time.Millisecond * 10)
+}
+
+func compute(fn func(float64, float64) float64) float64 {
+	return fn(3, 4)
+}
+
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
 }
