@@ -12,6 +12,7 @@ import (
 	//"os"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -47,6 +48,8 @@ func main() {
 		fmt.Printf("%0.7f\n", value)
 	}
 
+	// DECLARATING MAPS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	//var m map[string]int or look belove
 	presAge := make(map[string]int)
 	presAge["mrn"] = 31
 	presAge["mtn"] = 56
@@ -56,6 +59,32 @@ func main() {
 		fmt.Println(i, value)
 	}
 	fmt.Println(len(presAge))
+
+	/*Test that a key is present with a two-value assignment:
+
+	elem, ok = m[key]
+	If key is in m, ok is true. If not, ok is false.
+
+	If key is not in the map, then elem is the zero value for the map's
+	element type.
+
+	Note: if elem or ok have not yet been declared you could use a short
+	declaration form:
+
+	elem, ok := m[key]*/
+	m := make(map[string]int)
+
+	m["Answer"] = 42
+	fmt.Println("The value:", m["Answer"])
+
+	m["Answer"] = 48
+	fmt.Println("The value:", m["Answer"])
+
+	delete(m, "Answer")
+	fmt.Println("The value:", m["Answer"])
+
+	v, ok := m["Answer"]
+	fmt.Println("The value:", v, "Present?", ok)
 
 	num1, num2 := addThemUp(5)
 	fmt.Println(num1, num2)
@@ -127,6 +156,25 @@ func main() {
 
 		time.Sleep(time.Millisecond * 1000)
 	}
+
+	// Create a tic-tac-toe board.
+	game := [][]string{
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+		[]string{"_", "_", "_"},
+	}
+	// The players take turns.
+	game[0][0] = "X"
+	game[2][2] = "O"
+	game[2][0] = "X"
+	game[1][0] = "O"
+	game[0][2] = "X"
+
+	printBoard(game)
+
+	var m = map[string]Vertex{
+		"Bell Labs": Vertex{40.68433, -74.39967},
+		"Google":    Vertex{37.42202, -122.08408}}
 }
 
 func addThemUp(val int) (int, int) {
@@ -263,4 +311,14 @@ func addToppings(c chan string) {
 	pizza := <-c
 	fmt.Println(pizza + " send to the customer\n")
 	//time.Sleep(time.Millisecond * 10)
+}
+
+func printBoard(s [][]string) {
+	for i := 0; i < len(s); i++ {
+		fmt.Printf("%s\n", strings.Join(s[i], " "))
+	}
+}
+
+type Vertex struct {
+	Lat, Long float64
 }

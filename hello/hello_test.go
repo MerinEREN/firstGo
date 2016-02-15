@@ -12,7 +12,8 @@ func TestFactorial(t *testing.T) {
 	for _, c := range cases {
 		got := Factorial(c.in)
 		if c.want != got {
-			t.Errorf("Factorial(%q) = %q, want %q", c.in, got, c.want)
+			t.Errorf("Factorial(%q) = %q, want %q", c.in, got,
+				c.want)
 		}
 	}
 }
