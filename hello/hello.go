@@ -211,6 +211,28 @@ func main() {
 	fmt.Println("aKeyString")
 	fmt.Println(scIns.Value("aKeyString"))
 	fmt.Println("aKeyString")
+
+	if err := run(); err != nil {
+		fmt.Println(err)
+	}
+
+	// IMPORTANT EXAMPLE OF CREATING CUSTOM ERROR VIA error INTERFACE !!!!!
+	fmt.Println(Sqrt(2))
+	fmt.Println(Sqrt(-2))
+
+	var wg sync.WaitGroup
+	for i := 0; i < 5; i++ {
+		wg.Add(1) // INCREMENT OUR WAIT GROUP
+		x := i
+		go func() { // AFTER A LITTLE NAP, OUR GOROUTINES WILL
+			// DECREMENT THE WAIT GROUP
+			time.Sleep(time.Second * 2)
+			fmt.Println(x)
+			wg.Done()
+		}()
+	}
+	wg.Wait() // WAIT FOR OUR WAIT GROUP'S INTERNAL COUNTER TO HIT ZERO
+
 }
 
 func addThemUp(val int) (int, int) {
@@ -386,4 +408,34 @@ func (sc *SafeCounter) Value(s string) int {
 	sc.mux.Lock()
 	defer sc.mux.Unlock()
 	return sc.m[s]
+}
+
+type MyError struct {
+	When time.Time
+	What string
+}
+
+func (me MyError) Error() string {
+	return fmt.Sprintf("When: %v\nWhat: %s", me.When, me.What)
+}
+
+func run() error {
+	return &MyError{
+		time.Now(),
+		"It didn't work!!!",
+	}
+}
+
+type ErrNegativeSqrt float64
+
+func (e ErrNegativeSqrt) Error() string {
+	return fmt.Sprintf("can not Sqrt negatine number: %f", float64(e))
+}
+
+func Sqrt(f float64) (float64, error) {
+	if f < 0 {
+		return f, ErrNegativeSqrt(f)
+	} else {
+		return f, nil
+	}
 }
