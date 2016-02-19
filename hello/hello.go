@@ -13,6 +13,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -172,9 +173,9 @@ func main() {
 
 	printBoard(game)
 
-	var m = map[string]Vertex{
-		"Bell Labs": Vertex{40.68433, -74.39967},
-		"Google":    Vertex{37.42202, -122.08408}}
+	//var map2 = map[string]Vertex{
+	//	"Bell Labs": Vertex{40.68433, -74.39967},
+	//	"Google":    Vertex{37.42202, -122.08408}}
 
 	//FUNCTIONS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// FUNCTIONS ARE VALUES TOO. THEY CAN BE PASSED AROUND JUST LIKE OTHER
@@ -201,6 +202,15 @@ func main() {
 		fmt.Println(neg(-2 * i))
 	}
 
+	// sync.Mutex
+	scIns := SafeCounter{m: make(map[string]int)}
+	for i := 0; i < 1000; i++ {
+		go scIns.Inc("aKeyString")
+	}
+	time.Sleep(time.Second)
+	fmt.Println("aKeyString")
+	fmt.Println(scIns.Value("aKeyString"))
+	fmt.Println("aKeyString")
 }
 
 func addThemUp(val int) (int, int) {
@@ -359,4 +369,21 @@ func adder() func(int) int {
 		sum += x
 		return sum
 	}
+}
+
+type SafeCounter struct {
+	m   map[string]int
+	mux sync.Mutex
+}
+
+func (sc *SafeCounter) Inc(s string) {
+	sc.mux.Lock()
+	sc.m[s]++
+	sc.mux.Unlock()
+}
+
+func (sc *SafeCounter) Value(s string) int {
+	sc.mux.Lock()
+	defer sc.mux.Unlock()
+	return sc.m[s]
 }
