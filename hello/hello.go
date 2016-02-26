@@ -10,6 +10,7 @@ import (
 	"math"
 	//"net/http"
 	//"os"
+	"math/rand"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,11 +18,17 @@ import (
 	"time"
 )
 
-var dummySlice = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
-var dummyArray = [5]float64{1.1, 2.2, 3.3, 4, 5}
+var (
+	dummySlice = []int{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	dummyArray = [5]float64{1.1, 2.2, 3.3, 4, 5}
 
-var pizzaNumber = 0
-var pizzaName = ""
+	pizzaNumber = 0
+	pizzaName   = ""
+
+	Web   = fakeSearch("web")
+	Image = fakeSearch("image")
+	Video = fakeSearch("video")
+)
 
 /*var pizzaNumber int = 0
 var pizzaName string = ""*/
@@ -149,13 +156,17 @@ func main() {
 	//goji.Get("/hello/:name", hello)
 	//goji.Serve()
 
+	// var recvOnly <-chan int
+	// var sendOnly chan<- int
+	// CAN ASSIGN UNIDIRECTIONAL CHANNELS TO THE BIDIRECTIONALS AND VICE
+	// VERSA
 	stringChan := make(chan string)
+	stringChan2 := make(chan string)
 	for i := 0; i < 5; i++ {
 		go makeDough(stringChan)
-		go addSouce(stringChan)
-		go addToppings(stringChan)
-
-		time.Sleep(time.Millisecond * 1000)
+		go addSouce(stringChan, stringChan2)
+		go addToppings(stringChan2)
+		time.Sleep(time.Millisecond * 10)
 	}
 
 	// Create a tic-tac-toe board.
@@ -173,9 +184,14 @@ func main() {
 
 	printBoard(game)
 
-	var m = map[string]Vertex{
+	var myMap = map[string]Vertex{
 		"Bell Labs": Vertex{40.68433, -74.39967},
 		"Google":    Vertex{37.42202, -122.08408}}
+
+	for i, v := range myMap {
+		fmt.Printf("Place: %s Lat: %f-Long: %f\n", i, v.Lat,
+			v.Long)
+	}
 
 	//FUNCTIONS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	// FUNCTIONS ARE VALUES TOO. THEY CAN BE PASSED AROUND JUST LIKE OTHER
@@ -222,6 +238,13 @@ func main() {
 		}()
 	}
 	wg.Wait() // WAIT FOR OUR WAIT GROUP'S INTERNAL COUNTER TO HIT ZERO
+
+	start := time.Now()
+	fmt.Println("Google Search: A fake framework")
+	fmt.Print(Web("go"))
+	fmt.Print(Image("Anne Hathaway"))
+	fmt.Print(Video("Anne Hathaway"))
+	fmt.Println(time.Since(start))
 }
 
 func addThemUp(val int) (int, int) {
@@ -341,23 +364,20 @@ func englandHandler(w http.ResponseWriter, r *http.Request) {
 
 func makeDough(c chan string) {
 	pizzaNumber++
-	pizzaName = "This is Pizza #" + strconv.Itoa(pizzaNumber)
+	pizzaName = "\nThis is Pizza #" + strconv.Itoa(pizzaNumber)
 	fmt.Println(pizzaName + " send to souce adding\n")
 	c <- pizzaName
-	//time.Sleep(time.Millisecond * 10)
 }
 
-func addSouce(c chan string) {
+func addSouce(c, c2 chan string) {
 	pizza := <-c
 	fmt.Println(pizza + " send to topping adding\n")
-	c <- pizzaName
-	//time.Sleep(time.Millisecond * 10)
+	c2 <- pizzaName
 }
 
-func addToppings(c chan string) {
-	pizza := <-c
+func addToppings(c2 chan string) {
+	pizza := <-c2
 	fmt.Println(pizza + " send to the customer\n")
-	//time.Sleep(time.Millisecond * 10)
 }
 
 func printBoard(s [][]string) {
@@ -409,5 +429,17 @@ func Sqrt(f float64) (float64, error) {
 		return f, ErrNegativeSqrt(f)
 	} else {
 		return f, nil
+	}
+}
+
+// Google Search: A fake framework !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'m
+type Result string
+
+type Search func(query string) Result
+
+func fakeSearch(kind string) Search {
+	return func(query string) Result {
+		time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
+		return Result(fmt.Sprintf("%s result for %q\n", kind, query))
 	}
 }
