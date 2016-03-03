@@ -25,9 +25,15 @@ var (
 	pizzaNumber = 0
 	pizzaName   = ""
 
-	Web   = fakeSearch("web")
-	Image = fakeSearch("image")
-	Video = fakeSearch("video")
+	Web    = fakeSearch("web")
+	Image  = fakeSearch("image")
+	Video  = fakeSearch("video")
+	Web1   = fakeSearch("web")
+	Image1 = fakeSearch("image")
+	Video1 = fakeSearch("video")
+	Web2   = fakeSearch("web")
+	Image2 = fakeSearch("image")
+	Video2 = fakeSearch("video")
 )
 
 /*var pizzaNumber int = 0
@@ -106,7 +112,7 @@ func main() {
 		}
 		return closureHolderInt
 	}
-	fmt.Println(closureResultString)
+	fmt.Println(closureResultString())
 
 	facValue := 5
 	fmt.Println(Factorial(facValue))
@@ -185,8 +191,11 @@ func main() {
 	printBoard(game)
 
 	var myMap = map[string]Vertex{
-		"Bell Labs": Vertex{40.68433, -74.39967},
-		"Google":    Vertex{37.42202, -122.08408}}
+		"Bell Labs": {40.68433, -74.39967},
+		"Google":    {37.42202, -122.08408}}
+	/*var myMap = map[string]Vertex{
+	"Bell Labs": Vertex{40.68433, -74.39967},
+	"Google":    Vertex{37.42202, -122.08408}}*/
 
 	for i, v := range myMap {
 		fmt.Printf("Place: %s Lat: %f-Long: %f\n", i, v.Lat,
@@ -251,10 +260,21 @@ func main() {
 
 	start := time.Now()
 	fmt.Println("Google Search: A fake framework")
-	fmt.Print(Web("go"))
-	fmt.Print(Image("Anne Hathaway"))
-	fmt.Print(Video("Anne Hathaway"))
+	// go fmt.Print(Web("go"))
+	// go fmt.Print(Image("Anne Hathaway"))
+	// go fmt.Print(Video("Anne Hathaway"))
+	fmt.Println(Google("Tessa Thompson"))
 	fmt.Println(time.Since(start))
+
+	// Avoid timeout
+	// How do we avoid discarding results from slow servers?
+	// Replicate the servers. Send requests to multiple replicas, and use
+	// the first response.
+	start2 := time.Now()
+	result := UseFirst("golang", fakeSearch("replica1"),
+		fakeSearch("replica2"))
+	fmt.Println(result)
+	fmt.Println(time.Since(start2))
 }
 
 func addThemUp(val int) (int, int) {
@@ -279,7 +299,7 @@ func substractAndAddThem(array []int) (int, int) {
 }
 
 func Factorial(v int) int {
-	if v == 0 {
+	if v == 1 {
 		return 1
 	}
 	return v * Factorial(v-1)
@@ -459,7 +479,7 @@ func Sqrt(f float64) (float64, error) {
 	}
 }
 
-// Google Search: A fake framework !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'m
+// Google Search: A fake framework !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 type Result string
 
 type Search func(query string) Result
@@ -469,4 +489,32 @@ func fakeSearch(kind string) Search {
 		time.Sleep(time.Duration(rand.Intn(100)) * time.Millisecond)
 		return Result(fmt.Sprintf("%s result for %q\n", kind, query))
 	}
+}
+
+func Google(query string) (results []Result) {
+	c := make(chan Result)
+	go func() { c <- UseFirst(query, Web1, Web2) }()
+	go func() { c <- UseFirst(query, Image1, Image2) }()
+	go func() { c <- UseFirst(query, Video1, Video2) }()
+	timeout := time.After(80 * time.Millisecond)
+	for i := 0; i < 3; i++ { // Don't wait for slow server. No locks, no
+		// condition variables, no callbacks =)
+		select {
+		case result := <-c:
+			results = append(results, result)
+		case <-timeout:
+			fmt.Println("timed out")
+			return
+		}
+	}
+	return
+}
+
+func UseFirst(query string, replicas ...Search) Result {
+	c := make(chan Result)
+	searchReplica := func(i int) { c <- replicas[i](query) }
+	for i := range replicas {
+		go searchReplica(i)
+	}
+	return <-c
 }
